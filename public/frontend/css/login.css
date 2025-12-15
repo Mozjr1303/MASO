@@ -1,0 +1,128 @@
+/*fonts*/
+@font-face {
+  font-family: gothic-bold;
+  src: url(../fonts/Gothic-B.ttf);
+}
+@font-face {
+  font-family: gothic;
+  src: url(../fonts/Gothic.ttf);
+}
+@font-face {
+  font-family: ubuntu;
+  src: url(../fonts/Ubuntu-R.ttf);
+}
+@font-face {
+  font-family: impact;
+  src: url(../fonts/Impact.ttf);
+}
+/*resets*/
+* {
+  font-family: "gothic", Arial, Helvetica, sans-serif;
+}
+
+body {
+  background-image: linear-gradient(90deg, rgb(78, 155, 221), rgb(83, 151, 216));
+}
+
+::-moz-placeholder {
+  color: white;
+  opacity: 1;
+}
+
+::placeholder {
+  color: white;
+  opacity: 1;
+}
+
+:-ms-input-placeholder {
+  color: white;
+  opacity: 1;
+}
+
+::-ms-input-placeholder {
+  color: white;
+  opacity: 1;
+}
+
+.login {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  border-radius: 15px;
+  box-shadow: 0 0 12px 3px rgba(0, 0, 0, 0.3);
+  padding: 2rem auto;
+  background-color: rgb(83, 151, 216);
+  background-image: linear-gradient(90deg, rgb(73, 142, 206), rgb(102, 162, 219));
+}
+.login img {
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
+  width: 120px;
+  margin-top: 2rem;
+}
+.login button {
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
+  outline: none;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  margin-bottom: 2rem;
+  font-family: "gothic";
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease-out 0s;
+}
+.login input {
+  background-color: transparent;
+  width: 80%;
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
+  border: none;
+  outline: none;
+  border-bottom: 2px solid #fff;
+  padding: 10px 25px;
+  margin-top: 5px;
+  margin-bottom: 1rem;
+  color: #fff;
+}
+.login .input_wrapper {
+  position: relative;
+}
+.login i {
+  position: absolute;
+  left: 30px;
+  top: 10px;
+  font-size: 15px;
+  color: #fff;
+}
+
+@media (max-width: 550px) {
+  .login {
+    width: 85%;
+  }
+  .login i {
+    left: 20px;
+  }
+}
+@media (max-width: 420px) {
+  .login {
+    width: 85%;
+  }
+  .login i {
+    left: 30px;
+  }
+  .login input {
+    width: 70%;
+  }
+}
+@media (max-width: 370px) {
+  .login i {
+    left: 23px;
+  }
+}/*# sourceMappingURL=login.css.map */
