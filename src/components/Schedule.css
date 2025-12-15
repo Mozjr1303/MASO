@@ -1,0 +1,162 @@
+/* Schedule.css */
+.schedule-section {
+    padding: 100px 0;
+    background-color: var(--bg-darker);
+    position: relative;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.section-subtitle {
+    color: var(--text-dim);
+    margin-bottom: 60px;
+    font-size: 1.1rem;
+}
+
+.timeline {
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+/* Vertical Line */
+.timeline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 2px;
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(-50%);
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 60px;
+    width: 100%;
+}
+
+.timeline-item:last-child {
+    margin-bottom: 0;
+}
+
+.timeline-dot {
+    position: absolute;
+    left: 50%;
+    top: 20px;
+    width: 20px;
+    height: 20px;
+    background: var(--bg-dark);
+    border: 4px solid var(--primary);
+    border-radius: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    transition: all 0.3s ease;
+}
+
+.timeline-item.active .timeline-dot {
+    background: var(--primary);
+    box-shadow: 0 0 20px rgba(205, 164, 94, 0.5);
+}
+
+.timeline-content {
+    position: relative;
+    width: 45%;
+    /* Alternate sides handled below */
+}
+
+/* Alternating logic */
+.timeline-item:nth-child(odd) .timeline-content {
+    left: 0;
+    text-align: right;
+}
+
+.timeline-item:nth-child(even) .timeline-content {
+    left: 55%;
+    text-align: left;
+}
+
+.phase-badge {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    color: var(--primary);
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.event-card {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    transition: transform 0.3s ease;
+}
+
+.timeline-item:nth-child(odd) .event-card {
+    flex-direction: row-reverse;
+}
+
+.event-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--primary);
+}
+
+.event-icon {
+    width: 60px;
+    height: 60px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.event-icon img {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+}
+
+.event-details h3 {
+    margin-bottom: 5px;
+    font-size: 1.2rem;
+    color: #fff;
+}
+
+.event-date {
+    color: var(--text-dim);
+    font-size: 0.95rem;
+}
+
+@media (max-width: 768px) {
+    .timeline::before {
+        left: 20px;
+    }
+
+    .timeline-dot {
+        left: 20px;
+    }
+
+    .timeline-item:nth-child(odd) .timeline-content,
+    .timeline-item:nth-child(even) .timeline-content {
+        left: 50px;
+        width: calc(100% - 50px);
+        text-align: left;
+    }
+
+    .timeline-item:nth-child(odd) .event-card {
+        flex-direction: row;
+    }
+}
