@@ -1,1 +1,6 @@
 /* Basic reset for App.css if needed */
+@media (max-width: 768px) {
+  .App {
+    padding-bottom: 70px; /* Space for BottomNav */
+  }
+}
