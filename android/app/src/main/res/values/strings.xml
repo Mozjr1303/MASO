@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Maso Awards</string>
+    <string name="title_activity_main">Maso Awards</string>
+    <string name="package_name">com.masoawards.app</string>
+    <string name="custom_url_scheme">com.masoawards.app</string>
+</resources>

@@ -10,6 +10,7 @@ import BuyTicket from './pages/BuyTicket';
 import WaitingList from './pages/WaitingList'; // Added
 import ScrollToTop from './components/ScrollToTop';
 import BottomNav from './components/BottomNav';
+import { useMobileFeatures } from './hooks/useMobileFeatures';
 
 // Admin
 import Login from './pages/Admin/Login';
@@ -23,6 +24,7 @@ import WaitingListAdmin from './pages/Admin/WaitingListAdmin';
 function AppContent() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
+  useMobileFeatures();
 
   return (
     <div className="App">
