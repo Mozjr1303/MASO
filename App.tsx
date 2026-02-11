@@ -11,6 +11,7 @@ import { EventCard } from './components/EventCard';
 import { AuthForm } from './components/AuthForm';
 import { OrganizationDashboard } from './components/OrganizationDashboard';
 import { Profile } from './components/Profile';
+import { PWAInstallOverlay } from './components/PWAInstallOverlay';
 
 
 export default function App() {
@@ -188,6 +189,7 @@ export default function App() {
         <div className="pwa-container">
           <AuthForm onAuthSuccess={handleAuthSuccess} />
         </div>
+        <PWAInstallOverlay />
       </div>
     );
   }
@@ -269,6 +271,7 @@ export default function App() {
             </div>
           </div>
         </div>
+        <PWAInstallOverlay />
       </div>
     );
   }
@@ -481,6 +484,7 @@ export default function App() {
           </main>
         </div>
       </div>
+      <PWAInstallOverlay />
     </div>
   );
 }
