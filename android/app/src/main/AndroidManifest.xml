@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  This is the Android Manifest file. It is an essential file for any Android application.
+  It declares the components of the application, such as activities, services, broadcast receivers, and content providers.
+  It also declares the permissions that the application requires, and other metadata about the application.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- The application element contains all the components of the application. -->
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+
+        <!--
+          This is the main activity of the application. It is the entry point of the application.
+          The android:configChanges attribute specifies which configuration changes the activity will handle itself.
+          If a configuration change occurs that is not in this list, the activity will be restarted.
+          The android:launchMode attribute is set to "singleTask" to ensure that there is only one instance of the activity at a time.
+        -->
+        <activity
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode|navigation"
+            android:name=".MainActivity"
+            android:label="@string/title_activity_main"
+            android:theme="@style/AppTheme.NoActionBarLaunch"
+            android:launchMode="singleTask"
+            android:exported="true">
+
+            <!--
+              The intent-filter specifies the types of intents that an activity, service, or broadcast receiver can respond to.
+              This intent-filter declares that the MainActivity is the main entry point of the application and should be listed in the app launcher.
+            -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
+
+        <!--
+          This provider is used to share files between applications.
+          It uses a content URI to grant access to files, which is more secure than using file URIs.
+        -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"></meta-data>
+        </provider>
+    </application>
+
+    <!-- Permissions -->
+
+    <!-- This permission is required for the application to access the internet. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+</manifest>

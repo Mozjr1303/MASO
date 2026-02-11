@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alchemy Connect | Build Your Impact Legacy</title>
+  <meta name="description" content="The premier digital gateway for community transformation.">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <meta name="theme-color" content="#00e5ff" />
+  <style>
+    body {
+      background-color: #02020a;
+      color: #00e5ff;
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    #root {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .loader-box {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 30px;
+      border-radius: 20px;
+      border: 1px solid rgba(0, 229, 255, 0.2);
+      width: 320px;
+      box-shadow: 0 0 30px rgba(0, 229, 255, 0.1);
+    }
+
+    #boot-monitor {
+      margin-top: 20px;
+      text-align: left;
+      font-size: 11px;
+      font-family: monospace;
+      max-height: 250px;
+      overflow-y: auto;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 10px;
+      border-radius: 10px;
+    }
+
+    .error-link {
+      color: #ff3d00;
+      text-decoration: underline;
+      cursor: pointer;
+      display: block;
+      margin-top: 10px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root">
+    <div class="loader-box">
+      <h2 style="letter-spacing: 0.2em; margin: 0; font-weight: 900;">ALCHEMY CONNECT</h2>
+      <p style="font-size: 10px; opacity: 0.6; text-transform: uppercase; margin: 10px 0; letter-spacing: 0.1em;">
+        Initializing Neural Link...</p>
+
+      <div id="boot-monitor">
+        <div style="opacity: 0.4;">[SYSTEM] Awaiting Engine Signal...</div>
+      </div>
+
+      <div id="fail-safe"
+        style="display:none; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
+        <span onclick="location.reload(true)" class="error-link">Manual Hard Refresh</span>
+        <span onclick="localStorage.clear(); sessionStorage.clear(); location.reload();" class="error-link">Purge Local
+          Cache</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Global Error Capture for early boot phase
+    window.onerror = function (msg, url, line) {
+      var m = document.getElementById('boot-monitor');
+      if (m) m.innerHTML += '<div style="color:#ff3d00">> CRITICAL: ' + msg + ' (Line: ' + line + ')</div>';
+      document.getElementById('fail-safe').style.display = 'block';
+    };
+
+    // Watchdog: If React doesn't mark itself as booted, show fail-safe
+    setTimeout(function () {
+      if (!window.REACT_BOOTED) {
+        var m = document.getElementById('boot-monitor');
+        if (m) m.innerHTML += '<div style="color:#ff9100">> WATCHDOG: Boot timeout. Application layer failed to respond.</div>';
+        document.getElementById('fail-safe').style.display = 'block';
+      }
+    }, 6000);
+  </script>
+
+  <!-- vite entry point -->
+  <script type="module" src="/index.tsx"></script>
+</body>
+
+</html>

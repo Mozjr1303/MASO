@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Android Icon Generator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #4f46e5;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        input[type="file"] {
+            margin: 20px 0;
+            padding: 10px;
+            border: 2px dashed #4f46e5;
+            border-radius: 8px;
+            width: 100%;
+            cursor: pointer;
+        }
+        button {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        button:hover {
+            background: #4338ca;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .preview {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .preview img {
+            max-width: 200px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .downloads {
+            margin-top: 30px;
+        }
+        .download-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            margin: 8px 0;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #4f46e5;
+        }
+        .download-item a {
+            color: #4f46e5;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 6px 16px;
+            border: 2px solid #4f46e5;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        .download-item a:hover {
+            background: #4f46e5;
+            color: white;
+        }
+        .instructions {
+            background: #f0f9ff;
+            border-left: 4px solid #0ea5e9;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .instructions h3 {
+            margin-top: 0;
+            color: #0369a1;
+        }
+        .instructions ol {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .instructions li {
+            margin: 8px 0;
+        }
+        canvas {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Android Icon Generator</h1>
+        <p class="subtitle">Generate all required icon sizes for your Alchemy Connect Android app</p>
+        
+        <div class="instructions">
+            <h3>📋 Instructions:</h3>
+            <ol>
+                <li>Upload your icon image (the purple "A" icon)</li>
+                <li>Click "Generate All Sizes"</li>
+                <li>Download each size and place them in the corresponding folders</li>
+            </ol>
+        </div>
+
+        <input type="file" id="iconInput" accept="image/*">
+        
+        <div class="preview" id="preview"></div>
+        
+        <button id="generateBtn" disabled onclick="generateIcons()">Generate All Sizes</button>
+        
+        <div class="downloads" id="downloads"></div>
+    </div>
+
+    <canvas id="canvas"></canvas>
+
+    <script>
+        const iconSizes = [
+            { name: 'mdpi', size: 48, folder: 'mipmap-mdpi' },
+            { name: 'hdpi', size: 72, folder: 'mipmap-hdpi' },
+            { name: 'xhdpi', size: 96, folder: 'mipmap-xhdpi' },
+            { name: 'xxhdpi', size: 144, folder: 'mipmap-xxhdpi' },
+            { name: 'xxxhdpi', size: 192, folder: 'mipmap-xxxhdpi' }
+        ];
+
+        let sourceImage = null;
+
+        document.getElementById('iconInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const img = new Image();
+                    img.onload = function() {
+                        sourceImage = img;
+                        document.getElementById('preview').innerHTML = 
+                            `<p><strong>Preview:</strong></p><img src="${event.target.result}" alt="Icon preview">`;
+                        document.getElementById('generateBtn').disabled = false;
+                    };
+                    img.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function generateIcons() {
+            if (!sourceImage) return;
+
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            const downloadsDiv = document.getElementById('downloads');
+            downloadsDiv.innerHTML = '<h3 style="color: #4f46e5; margin-top: 30px;">📥 Download Icons:</h3>';
+
+            iconSizes.forEach(config => {
+                canvas.width = config.size;
+                canvas.height = config.size;
+                
+                // Draw with high quality
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+                ctx.drawImage(sourceImage, 0, 0, config.size, config.size);
+                
+                // Convert to blob and create download link
+                canvas.toBlob(function(blob) {
+                    const url = URL.createObjectURL(blob);
+                    const downloadItem = document.createElement('div');
+                    downloadItem.className = 'download-item';
+                    downloadItem.innerHTML = `
+                        <span><strong>${config.name}</strong> (${config.size}x${config.size}px) → android/app/src/main/res/${config.folder}/</span>
+                        <a href="${url}" download="ic_launcher.png">Download</a>
+                    `;
+                    downloadsDiv.appendChild(downloadItem);
+                }, 'image/png');
+            });
+
+            // Also generate the foreground versions
+            iconSizes.forEach(config => {
+                canvas.width = config.size;
+                canvas.height = config.size;
+                
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+                ctx.drawImage(sourceImage, 0, 0, config.size, config.size);
+                
+                canvas.toBlob(function(blob) {
+                    const url = URL.createObjectURL(blob);
+                    const downloadItem = document.createElement('div');
+                    downloadItem.className = 'download-item';
+                    downloadItem.innerHTML = `
+                        <span><strong>${config.name} (foreground)</strong> (${config.size}x${config.size}px) → android/app/src/main/res/${config.folder}/</span>
+                        <a href="${url}" download="ic_launcher_foreground.png">Download</a>
+                    `;
+                    downloadsDiv.appendChild(downloadItem);
+                }, 'image/png');
+            });
+
+            // Generate round versions
+            iconSizes.forEach(config => {
+                canvas.width = config.size;
+                canvas.height = config.size;
+                
+                ctx.clearRect(0, 0, config.size, config.size);
+                
+                // Create circular clipping path
+                ctx.beginPath();
+                ctx.arc(config.size / 2, config.size / 2, config.size / 2, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.clip();
+                
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+                ctx.drawImage(sourceImage, 0, 0, config.size, config.size);
+                
+                canvas.toBlob(function(blob) {
+                    const url = URL.createObjectURL(blob);
+                    const downloadItem = document.createElement('div');
+                    downloadItem.className = 'download-item';
+                    downloadItem.innerHTML = `
+                        <span><strong>${config.name} (round)</strong> (${config.size}x${config.size}px) → android/app/src/main/res/${config.folder}/</span>
+                        <a href="${url}" download="ic_launcher_round.png">Download</a>
+                    `;
+                    downloadsDiv.appendChild(downloadItem);
+                }, 'image/png');
+                
+                // Reset clipping
+                ctx.restore();
+                ctx.save();
+            });
+        }
+    </script>
+</body>
+</html>
