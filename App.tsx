@@ -183,81 +183,91 @@ export default function App() {
 
   // Show auth form if not authenticated
   if (!isAuthenticated || !authUser) {
-    return <AuthForm onAuthSuccess={handleAuthSuccess} />;
+    return (
+      <div className="min-h-screen bg-[#02020a]">
+        <div className="pwa-container">
+          <AuthForm onAuthSuccess={handleAuthSuccess} />
+        </div>
+      </div>
+    );
   }
 
   // Show organization dashboard for organizations
   if (authUser.type === 'organization') {
     return (
-      <div className="min-h-screen bg-[#050510] font-sans text-slate-200">
-        {/* Header */}
-        <header className="bg-[#0f172a]/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40">
-          <div className="max-w-7xl mx-auto px-4 lg:px-8 h-16 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <img src={logo} alt="Alchemy Logo" className="w-10 h-10 object-contain" />
-              <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-alchemy-500 to-alchemy-700">
-                Alchemy Connect
-              </span>
-            </div>
+      <div className="min-h-screen bg-[#02020a]">
+        <div className="pwa-container">
+          <div className="min-h-screen font-sans text-slate-200">
+            {/* Header */}
+            <header className="bg-[#0f172a]/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40">
+              <div className="max-w-7xl mx-auto px-4 lg:px-8 h-16 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <img src={logo} alt="Alchemy Logo" className="w-10 h-10 object-contain" />
+                  <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-alchemy-500 to-alchemy-700">
+                    Alchemy Connect
+                  </span>
+                </div>
 
-            {/* Desktop Nav */}
-            <button
-              onClick={handleLogout}
-              className="hidden lg:flex items-center gap-2 px-4 py-2 text-slate-400 hover:bg-slate-800 hover:text-white rounded-lg transition-colors"
-            >
-              <LogOut className="w-5 h-5" />
-              <span className="font-medium">Logout</span>
-            </button>
+                {/* Desktop Nav */}
+                <button
+                  onClick={handleLogout}
+                  className="hidden lg:flex items-center gap-2 px-4 py-2 text-slate-400 hover:bg-slate-800 hover:text-white rounded-lg transition-colors"
+                >
+                  <LogOut className="w-5 h-5" />
+                  <span className="font-medium">Logout</span>
+                </button>
 
-            {/* Mobile Nav Button */}
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 text-slate-400 hover:text-white"
-            >
-              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
+                {/* Mobile Nav Button */}
+                <button
+                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                  className="lg:hidden p-2 text-slate-400 hover:text-white"
+                >
+                  {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                </button>
+              </div>
 
-          {/* Mobile Dropdown */}
-          <div className={`lg:hidden absolute top-full left-0 right-0 overflow-hidden transition-all duration-300 bg-[#0f172a] border-b border-slate-800 shadow-2xl ${isMobileMenuOpen ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0 pointer-events-none'}`}>
-            <div className="p-4 space-y-4">
-              <div className="flex items-center gap-3 px-4 py-3 bg-slate-800/50 rounded-xl">
-                <img
-                  src={(authUser as Organization).logo || 'https://picsum.photos/id/45/100/100'}
-                  alt="Org"
-                  className="w-8 h-8 rounded-lg object-cover"
-                />
-                <div className="flex flex-col">
-                  <span className="text-sm font-semibold">{authUser.name}</span>
-                  <span className="text-xs text-slate-500">Organization</span>
+              {/* Mobile Dropdown */}
+              <div className={`lg:hidden absolute top-full left-0 right-0 overflow-hidden transition-all duration-300 bg-[#0f172a] border-b border-slate-800 shadow-2xl ${isMobileMenuOpen ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0 pointer-events-none'}`}>
+                <div className="p-4 space-y-4">
+                  <div className="flex items-center gap-3 px-4 py-3 bg-slate-800/50 rounded-xl">
+                    <img
+                      src={(authUser as Organization).logo || 'https://picsum.photos/id/45/100/100'}
+                      alt="Org"
+                      className="w-8 h-8 rounded-lg object-cover"
+                    />
+                    <div className="flex flex-col">
+                      <span className="text-sm font-semibold">{authUser.name}</span>
+                      <span className="text-xs text-slate-500">Organization</span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-red-900/20 hover:text-red-400 rounded-xl transition-all"
+                  >
+                    <LogOut className="w-5 h-5" />
+                    Logout
+                  </button>
                 </div>
               </div>
-              <button
-                onClick={handleLogout}
-                className="w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-red-900/20 hover:text-red-400 rounded-xl transition-all"
-              >
-                <LogOut className="w-5 h-5" />
-                Logout
-              </button>
+            </header>
+
+            <div className="max-w-7xl mx-auto p-4 lg:p-8">
+              <OrganizationDashboard
+                organization={authUser as Organization}
+                events={events}
+                onCreateEvent={handleCreateEvent}
+                onEditEvent={async (id, updates) => {
+                  try {
+                    await eventService.updateEvent(id, updates);
+                    setEvents(prev => prev.map(e => e.id === id ? { ...e, ...updates } : e));
+                  } catch (err) {
+                    alert("Failed to update event.");
+                  }
+                }}
+                onDeleteEvent={handleDeleteEvent}
+              />
             </div>
           </div>
-        </header>
-
-        <div className="max-w-7xl mx-auto p-4 lg:p-8">
-          <OrganizationDashboard
-            organization={authUser as Organization}
-            events={events}
-            onCreateEvent={handleCreateEvent}
-            onEditEvent={async (id, updates) => {
-              try {
-                await eventService.updateEvent(id, updates);
-                setEvents(prev => prev.map(e => e.id === id ? { ...e, ...updates } : e));
-              } catch (err) {
-                alert("Failed to update event.");
-              }
-            }}
-            onDeleteEvent={handleDeleteEvent}
-          />
         </div>
       </div>
     );
@@ -346,129 +356,131 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050510] font-sans flex text-slate-200">
-
-
-      {/* Sidebar Navigation - Desktop Only */}
-      <aside className="hidden lg:flex flex-col sticky top-0 h-screen w-64 bg-[#0f172a] border-r border-slate-800 z-50 transition-transform duration-300 ease-in-out">
-        <div className="p-6 flex items-center gap-3 border-b border-slate-800 h-20">
-          <img src={logo} alt="Alchemy Logo" className="w-10 h-10 object-contain" />
-          <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-alchemy-500 to-alchemy-700">
-            Alchemy Connect
-          </span>
-        </div>
-
-        <nav className="p-4 space-y-2 mt-4">
-          <button
-            onClick={() => { setView('explore'); }}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${view === 'explore' ? 'bg-alchemy-900/50 text-alchemy-500 font-semibold border border-alchemy-500/30' : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'}`}
-          >
-            <LayoutGrid className="w-5 h-5" />
-            Explore
-          </button>
-
-          <button
-            onClick={() => { setView('my-activities'); }}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${view === 'my-activities' ? 'bg-alchemy-900/50 text-alchemy-500 font-semibold border border-alchemy-500/30' : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'}`}
-          >
-            <CalendarHeart className="w-5 h-5" />
-            My Activities
-            {myActivities.length > 0 && (
-              <span className="ml-auto bg-alchemy-500 text-black py-0.5 px-2 rounded-full text-xs font-bold">
-                {myActivities.length}
-              </span>
-            )}
-          </button>
-
-          <button
-            onClick={() => { setView('profile'); }}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${view === 'profile' ? 'bg-alchemy-900/50 text-alchemy-500 font-semibold border border-alchemy-500/30' : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'}`}
-          >
-            <User className="w-5 h-5" />
-            Profile
-          </button>
-
-          <button
-            onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-slate-400 hover:bg-red-900/20 hover:text-red-400 mt-4"
-          >
-            <LogOut className="w-5 h-5" />
-            Logout
-          </button>
-        </nav>
-
-        <div className="absolute bottom-0 w-full p-6 border-t border-slate-800">
-          <div className="flex items-center gap-3">
-            <img
-              src={authUser.type === 'organization' ? (authUser as Organization).logo || 'https://picsum.photos/id/45/100/100' : (authUser as UserType).avatar || 'https://picsum.photos/id/64/100/100'}
-              alt="User"
-              className="w-10 h-10 rounded-full object-cover border border-slate-700"
-            />
-            <div className="flex flex-col">
-              <span className="text-sm font-semibold text-slate-200">{authUser.name}</span>
-              <span className="text-xs text-slate-500">
-                {authUser.type === 'volunteer' ? `Level ${(authUser as UserType).level} Alchemist` : 'Verified Organization'}
+    <div className="min-h-screen bg-[#02020a]">
+      <div className="pwa-container">
+        <div className="min-h-screen font-sans flex text-slate-200">
+          {/* Sidebar Navigation - Desktop Only */}
+          <aside className="hidden lg:flex flex-col sticky top-0 h-screen w-64 bg-[#0f172a] border-r border-slate-800 z-50 transition-transform duration-300 ease-in-out">
+            <div className="p-6 flex items-center gap-3 border-b border-slate-800 h-20">
+              <img src={logo} alt="Alchemy Logo" className="w-10 h-10 object-contain" />
+              <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-alchemy-500 to-alchemy-700">
+                Alchemy Connect
               </span>
             </div>
-          </div>
-        </div>
-      </aside>
 
-      {/* Main Content Area */}
-      <main className="flex-1 min-w-0 flex flex-col h-screen overflow-hidden">
-        {/* Mobile Header */}
-        <header className="lg:hidden h-16 bg-[#0f172a]/80 backdrop-blur-md border-b border-slate-800 flex items-center px-4 justify-between shrink-0 relative z-[60]">
-          <div className="flex items-center gap-2">
-            <img src={logo} alt="Alchemy Logo" className="w-8 h-8 object-contain" />
-            <span className="font-bold text-slate-200">
-              Alchemy Connect
-            </span>
-          </div>
-          <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 text-slate-400">
-            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+            <nav className="p-4 space-y-2 mt-4">
+              <button
+                onClick={() => { setView('explore'); }}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${view === 'explore' ? 'bg-alchemy-900/50 text-alchemy-500 font-semibold border border-alchemy-500/30' : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'}`}
+              >
+                <LayoutGrid className="w-5 h-5" />
+                Explore
+              </button>
 
-          {/* Mobile Dropdown */}
-          <div className={`absolute top-full left-0 right-0 overflow-hidden transition-all duration-300 bg-[#0f172a] border-b border-slate-800 ${isMobileMenuOpen ? 'max-h-[80vh] opacity-100' : 'max-h-0 opacity-0 pointer-events-none'}`}>
-            <nav className="p-4 space-y-2">
-              {[
-                { id: 'explore', label: 'Explore', icon: LayoutGrid },
-                { id: 'my-activities', label: 'My Activities', icon: CalendarHeart },
-                { id: 'profile', label: 'Profile', icon: User }
-              ].map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => { setView(item.id as ViewState); setIsMobileMenuOpen(false); }}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${view === item.id ? 'bg-alchemy-900/50 text-alchemy-500 font-semibold border border-alchemy-500/30' : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'}`}
-                >
-                  <item.icon className="w-5 h-5" />
-                  {item.label}
-                  {item.id === 'my-activities' && myActivities.length > 0 && (
-                    <span className="ml-auto bg-alchemy-500 text-black py-0.5 px-2 rounded-full text-xs font-bold">
-                      {myActivities.length}
-                    </span>
-                  )}
-                </button>
-              ))}
-              <div className="h-px bg-slate-800 my-2" />
+              <button
+                onClick={() => { setView('my-activities'); }}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${view === 'my-activities' ? 'bg-alchemy-900/50 text-alchemy-500 font-semibold border border-alchemy-500/30' : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'}`}
+              >
+                <CalendarHeart className="w-5 h-5" />
+                My Activities
+                {myActivities.length > 0 && (
+                  <span className="ml-auto bg-alchemy-500 text-black py-0.5 px-2 rounded-full text-xs font-bold">
+                    {myActivities.length}
+                  </span>
+                )}
+              </button>
+
+              <button
+                onClick={() => { setView('profile'); }}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${view === 'profile' ? 'bg-alchemy-900/50 text-alchemy-500 font-semibold border border-alchemy-500/30' : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'}`}
+              >
+                <User className="w-5 h-5" />
+                Profile
+              </button>
+
               <button
                 onClick={handleLogout}
-                className="w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-red-900/20 hover:text-red-400 rounded-xl transition-all"
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-slate-400 hover:bg-red-900/20 hover:text-red-400 mt-4"
               >
                 <LogOut className="w-5 h-5" />
                 Logout
               </button>
             </nav>
-          </div>
-        </header>
 
-        {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto p-4 lg:p-10">
-          <div className="max-w-6xl mx-auto">
-            {renderContent()}
-          </div>
+            <div className="absolute bottom-0 w-full p-6 border-t border-slate-800">
+              <div className="flex items-center gap-3">
+                <img
+                  src={authUser.type === 'organization' ? (authUser as Organization).logo || 'https://picsum.photos/id/45/100/100' : (authUser as UserType).avatar || 'https://picsum.photos/id/64/100/100'}
+                  alt="User"
+                  className="w-10 h-10 rounded-full object-cover border border-slate-700"
+                />
+                <div className="flex flex-col">
+                  <span className="text-sm font-semibold text-slate-200">{authUser.name}</span>
+                  <span className="text-xs text-slate-500">
+                    {authUser.type === 'volunteer' ? `Level ${(authUser as UserType).level} Alchemist` : 'Verified Organization'}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </aside>
+
+          {/* Main Content Area */}
+          <main className="flex-1 min-w-0 flex flex-col h-screen overflow-hidden">
+            {/* Mobile Header */}
+            <header className="lg:hidden h-16 bg-[#0f172a]/80 backdrop-blur-md border-b border-slate-800 flex items-center px-4 justify-between shrink-0 relative z-[60]">
+              <div className="flex items-center gap-2">
+                <img src={logo} alt="Alchemy Logo" className="w-8 h-8 object-contain" />
+                <span className="font-bold text-slate-200">
+                  Alchemy Connect
+                </span>
+              </div>
+              <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 text-slate-400">
+                {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </button>
+
+              {/* Mobile Dropdown */}
+              <div className={`absolute top-full left-0 right-0 overflow-hidden transition-all duration-300 bg-[#0f172a] border-b border-slate-800 ${isMobileMenuOpen ? 'max-h-[80vh] opacity-100' : 'max-h-0 opacity-0 pointer-events-none'}`}>
+                <nav className="p-4 space-y-2">
+                  {[
+                    { id: 'explore', label: 'Explore', icon: LayoutGrid },
+                    { id: 'my-activities', label: 'My Activities', icon: CalendarHeart },
+                    { id: 'profile', label: 'Profile', icon: User }
+                  ].map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => { setView(item.id as ViewState); setIsMobileMenuOpen(false); }}
+                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${view === item.id ? 'bg-alchemy-900/50 text-alchemy-500 font-semibold border border-alchemy-500/30' : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'}`}
+                    >
+                      <item.icon className="w-5 h-5" />
+                      {item.label}
+                      {item.id === 'my-activities' && myActivities.length > 0 && (
+                        <span className="ml-auto bg-alchemy-500 text-black py-0.5 px-2 rounded-full text-xs font-bold">
+                          {myActivities.length}
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                  <div className="h-px bg-slate-800 my-2" />
+                  <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-red-900/20 hover:text-red-400 rounded-xl transition-all"
+                  >
+                    <LogOut className="w-5 h-5" />
+                    Logout
+                  </button>
+                </nav>
+              </div>
+            </header>
+
+            {/* Scrollable Content */}
+            <div className="flex-1 overflow-y-auto p-4 lg:p-10">
+              <div className="max-w-6xl mx-auto">
+                {renderContent()}
+              </div>
+            </div>
+          </main>
         </div>
-      </main>
+      </div>
     </div>
   );
 }
